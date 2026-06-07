@@ -6,6 +6,7 @@ const { GoogleGenerativeAI } = require("@google/generative-ai");
 dotenv.config();
 
 const app = express();
+
 app.use(bodyParser.json());
 
 const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
@@ -31,8 +32,10 @@ app.get("/routes", (req, res) => {
 
 app.post("/rank-jobs", async (req, res) => {
   try {
-    const { cv, jobs } = req.body;
     console.log("BODY RECEIVED:", req.body);
+
+    const { cv, jobs } = req.body;
+
     if (!cv || !jobs) {
       return res.status(400).json({
         error: "Please provide cv and jobs in request body"
@@ -40,7 +43,7 @@ app.post("/rank-jobs", async (req, res) => {
     }
 
     const model = genAI.getGenerativeModel({
-      model: "gemini-2.0-flash"
+      model: "gemini-2.5-flash"
     });
 
     const prompt = `
@@ -53,31 +56,34 @@ Jobs:
 ${JSON.stringify(jobs)}
 
 For each job:
-1. Give score out of 100
-2. Explain match
-3. Suggest CV improvements
+1. Give a score out of 100.
+2. Explain the match.
+3. Suggest CV improvements.
 
 Return a structured response.
 `;
 
     const result = await model.generateContent(prompt);
 
-    res.json({
+    return res.json({
       success: true,
       result: result.response.text()
     });
 
-  console.error("FULL ERROR:", error);
+  } catch (error) {
 
-res.status(500).json({
-  error: error.message,
-  details: error.toString()
-});
+    console.error("FULL ERROR:", error);
+
+    return res.status(500).json({
+      success: false,
+      error: error.message,
+      details: JSON.stringify(error, null, 2)
+    });
   }
 });
 
 const PORT = process.env.PORT || 3000;
 
 app.listen(PORT, () => {
-  console.log("Server running on port " + PORT);
+  console.log(`Server running on port ${PORT}`);
 });
