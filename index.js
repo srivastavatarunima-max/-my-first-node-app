@@ -1,32 +1,25 @@
 const express = require("express");
 const bodyParser = require("body-parser");
-require("dotenv").config();
+const dotenv = require("dotenv");
+const { GoogleGenerativeAI } = require("@google/generative-ai");
 
-const OpenAI = require("openai");
+dotenv.config();
 
 const app = express();
 app.use(bodyParser.json());
 
-// -------------------------------
-// BASIC HEALTH CHECK
-// -------------------------------
+const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
+
 app.get("/", (req, res) => {
-  res.send("🚀 AI Job Agent is LIVE");
+  res.send("🚀 Gemini AI Job Agent is LIVE");
 });
 
-// -------------------------------
-// DEBUG: CHECK IF SERVER WORKING
-// -------------------------------
 app.get("/test", (req, res) => {
   res.send("✅ Server is working correctly");
 });
 
-// -------------------------------
-// DEBUG: SEE ALL AVAILABLE ROUTES
-// -------------------------------
 app.get("/routes", (req, res) => {
   res.json({
-    status: "RUNNING",
     available_routes: [
       "GET /",
       "GET /test",
@@ -36,9 +29,6 @@ app.get("/routes", (req, res) => {
   });
 });
 
-// -------------------------------
-// AI JOB RANKING (MAIN FEATURE)
-// -------------------------------
 app.post("/rank-jobs", async (req, res) => {
   try {
     const { cv, jobs } = req.body;
@@ -49,47 +39,32 @@ app.post("/rank-jobs", async (req, res) => {
       });
     }
 
-    const client = new OpenAI({
-      apiKey: process.env.OPENAI_API_KEY
+    const model = genAI.getGenerativeModel({
+      model: "gemini-2.5-flash"
     });
 
     const prompt = `
-You are an expert AI career assistant.
-
-TASK:
-- Match CV with jobs
-- Score each job (0–100)
-- Rank top matches
-- Explain reasoning
-- Suggest CV improvements
+You are an expert career advisor.
 
 CV:
 ${cv}
 
-JOBS:
-${JSON.stringify(jobs, null, 2)}
+Jobs:
+${JSON.stringify(jobs)}
 
-Return ONLY valid JSON:
-{
-  "ranked_jobs": [
-    {
-      "title": "",
-      "score": 0,
-      "reason": "",
-      "cv_changes": ""
-    }
-  ]
-}
+For each job:
+1. Give score out of 100
+2. Explain match
+3. Suggest CV improvements
+
+Return a structured response.
 `;
 
-    const response = await client.chat.completions.create({
-      model: "gpt-4o-mini",
-      messages: [{ role: "user", content: prompt }]
-    });
+    const result = await model.generateContent(prompt);
 
     res.json({
       success: true,
-      result: response.choices[0].message.content
+      result: result.response.text()
     });
 
   } catch (error) {
@@ -99,10 +74,8 @@ Return ONLY valid JSON:
   }
 });
 
-// -------------------------------
-// START SERVER
-// -------------------------------
 const PORT = process.env.PORT || 3000;
+
 app.listen(PORT, () => {
-  console.log(`Server running on port ${PORT}`);
+  console.log("Server running on port " + PORT);
 });
