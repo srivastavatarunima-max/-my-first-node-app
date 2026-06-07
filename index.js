@@ -32,7 +32,7 @@ app.get("/routes", (req, res) => {
 app.post("/rank-jobs", async (req, res) => {
   try {
     const { cv, jobs } = req.body;
-
+    console.log("BODY RECEIVED:", req.body);
     if (!cv || !jobs) {
       return res.status(400).json({
         error: "Please provide cv and jobs in request body"
