@@ -67,10 +67,12 @@ Return a structured response.
       result: result.response.text()
     });
 
-  } catch (error) {
-    res.status(500).json({
-      error: error.message
-    });
+  console.error("FULL ERROR:", error);
+
+res.status(500).json({
+  error: error.message,
+  details: error.toString()
+});
   }
 });
 
