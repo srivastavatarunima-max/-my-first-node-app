@@ -4,50 +4,72 @@ require("dotenv").config();
 
 const OpenAI = require("openai");
 
-const client = new OpenAI({
-  apiKey: process.env.OPENAI_API_KEY
-});
-
 const app = express();
 app.use(bodyParser.json());
 
-/**
- * ✅ TEST ROUTE (CHECK IF SERVER WORKS)
- */
+// -------------------------------
+// BASIC HEALTH CHECK
+// -------------------------------
 app.get("/", (req, res) => {
-  res.send("AI Job Ranking Engine is LIVE 🚀");
+  res.send("🚀 AI Job Agent is LIVE");
 });
 
-/**
- * ✅ TEST ROUTE FOR DEBUGGING POSTMAN
- */
-app.get("/rank-jobs", (req, res) => {
-  res.send("Rank Jobs endpoint exists. Use POST request.");
+// -------------------------------
+// DEBUG: CHECK IF SERVER WORKING
+// -------------------------------
+app.get("/test", (req, res) => {
+  res.send("✅ Server is working correctly");
 });
 
-/**
- * 🤖 MAIN AI JOB RANKING ENGINE
- */
+// -------------------------------
+// DEBUG: SEE ALL AVAILABLE ROUTES
+// -------------------------------
+app.get("/routes", (req, res) => {
+  res.json({
+    status: "RUNNING",
+    available_routes: [
+      "GET /",
+      "GET /test",
+      "GET /routes",
+      "POST /rank-jobs"
+    ]
+  });
+});
+
+// -------------------------------
+// AI JOB RANKING (MAIN FEATURE)
+// -------------------------------
 app.post("/rank-jobs", async (req, res) => {
   try {
     const { cv, jobs } = req.body;
 
+    if (!cv || !jobs) {
+      return res.status(400).json({
+        error: "Please provide cv and jobs in request body"
+      });
+    }
+
+    const client = new OpenAI({
+      apiKey: process.env.OPENAI_API_KEY
+    });
+
     const prompt = `
-You are an expert career advisor AI.
+You are an expert AI career assistant.
 
 TASK:
-- Compare CV with job descriptions
-- Score each job 0–100
-- Select TOP matching jobs
-- Explain why
+- Match CV with jobs
+- Score each job (0–100)
+- Rank top matches
+- Explain reasoning
+- Suggest CV improvements
 
 CV:
 ${cv}
 
-Jobs:
-${JSON.stringify(jobs)}
+JOBS:
+${JSON.stringify(jobs, null, 2)}
 
-Return JSON:
+Return ONLY valid JSON:
 {
   "ranked_jobs": [
     {
@@ -66,6 +88,7 @@ Return JSON:
     });
 
     res.json({
+      success: true,
       result: response.choices[0].message.content
     });
 
@@ -76,5 +99,10 @@ Return JSON:
   }
 });
 
+// -------------------------------
+// START SERVER
+// -------------------------------
 const PORT = process.env.PORT || 3000;
-app.listen(PORT, () => console.log("Server running on " + PORT));
+app.listen(PORT, () => {
+  console.log(`Server running on port ${PORT}`);
+});
