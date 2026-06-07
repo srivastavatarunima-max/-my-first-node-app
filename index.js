@@ -1,26 +1,32 @@
 const express = require("express");
 const bodyParser = require("body-parser");
 require("dotenv").config();
-const { generateCV, analyzeJob } = require("./ai");
+const { rankJobs } = require("./jobEngine");
 
 const app = express();
 app.use(bodyParser.json());
 
-// 🟢 Health check
+// health check
 app.get("/", (req, res) => {
-  res.send("AI Job Agent is running 🚀");
+  res.send("AI Job Ranking Engine is running 🚀");
 });
 
-// 🤖 CV Generator (Option 1)
-app.post("/generate-cv", async (req, res) => {
-  const result = await generateCV(req.body);
-  res.json({ cv: result });
-});
-
-// 🔎 Job Analyzer (Option 2)
-app.post("/analyze-job", async (req, res) => {
-  const result = await analyzeJob(req.body);
-  res.json({ analysis: result });
+/**
+ * INPUT:
+ * {
+ *   "cv": "...text...",
+ *   "jobs": [
+ *     { "title": "", "description": "" }
+ *   ]
+ * }
+ */
+app.post("/rank-jobs", async (req, res) => {
+  try {
+    const result = await rankJobs(req.body);
+    res.json(result);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
 });
 
 const PORT = process.env.PORT || 3000;
