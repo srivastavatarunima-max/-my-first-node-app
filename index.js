@@ -1,31 +1,78 @@
 const express = require("express");
 const bodyParser = require("body-parser");
 require("dotenv").config();
-const { rankJobs } = require("./jobEngine");
+
+const OpenAI = require("openai");
+
+const client = new OpenAI({
+  apiKey: process.env.OPENAI_API_KEY
+});
 
 const app = express();
 app.use(bodyParser.json());
 
-// health check
+/**
+ * ✅ TEST ROUTE (CHECK IF SERVER WORKS)
+ */
 app.get("/", (req, res) => {
-  res.send("AI Job Ranking Engine is running 🚀");
+  res.send("AI Job Ranking Engine is LIVE 🚀");
 });
 
 /**
- * INPUT:
- * {
- *   "cv": "...text...",
- *   "jobs": [
- *     { "title": "", "description": "" }
- *   ]
- * }
+ * ✅ TEST ROUTE FOR DEBUGGING POSTMAN
+ */
+app.get("/rank-jobs", (req, res) => {
+  res.send("Rank Jobs endpoint exists. Use POST request.");
+});
+
+/**
+ * 🤖 MAIN AI JOB RANKING ENGINE
  */
 app.post("/rank-jobs", async (req, res) => {
   try {
-    const result = await rankJobs(req.body);
-    res.json(result);
-  } catch (err) {
-    res.status(500).json({ error: err.message });
+    const { cv, jobs } = req.body;
+
+    const prompt = `
+You are an expert career advisor AI.
+
+TASK:
+- Compare CV with job descriptions
+- Score each job 0–100
+- Select TOP matching jobs
+- Explain why
+
+CV:
+${cv}
+
+Jobs:
+${JSON.stringify(jobs)}
+
+Return JSON:
+{
+  "ranked_jobs": [
+    {
+      "title": "",
+      "score": 0,
+      "reason": "",
+      "cv_changes": ""
+    }
+  ]
+}
+`;
+
+    const response = await client.chat.completions.create({
+      model: "gpt-4o-mini",
+      messages: [{ role: "user", content: prompt }]
+    });
+
+    res.json({
+      result: response.choices[0].message.content
+    });
+
+  } catch (error) {
+    res.status(500).json({
+      error: error.message
+    });
   }
 });
 
