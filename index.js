@@ -3,6 +3,7 @@ const bodyParser = require("body-parser");
 const dotenv = require("dotenv");
 const { GoogleGenerativeAI } = require("@google/generative-ai");
 const fs = require("fs");
+
 dotenv.config();
 
 const app = express();
@@ -11,20 +12,32 @@ app.use(bodyParser.json());
 
 const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY);
 
-// Home Page
+// HOME
 app.get("/", (req, res) => {
   res.send("🚀 Gemini AI Job Agent is LIVE");
 });
 
-// Health Check
+// TEST
 app.get("/test", (req, res) => {
   res.send("✅ Server is working correctly");
 });
 
-// Show Available Routes
+// ROUTES
 app.get("/routes", (req, res) => {
-  app.get("/profile", (req, res) => {
+  res.json({
+    available_routes: [
+      "GET /",
+      "GET /test",
+      "GET /routes",
+      "GET /profile",
+      "GET /demo",
+      "POST /rank-jobs"
+    ]
+  });
+});
 
+// PROFILE
+app.get("/profile", (req, res) => {
   try {
 
     const profile = fs.readFileSync(
@@ -41,21 +54,11 @@ app.get("/routes", (req, res) => {
     });
 
   }
-
-});
-  res.json({
-    available_routes: [
-      "GET /",
-      "GET /test",
-      "GET /routes",
-      "GET /demo",
-      "POST /rank-jobs"
-    ]
-  });
 });
 
-// Simple Gemini Test
+// GEMINI TEST
 app.get("/demo", async (req, res) => {
+
   try {
 
     const model = genAI.getGenerativeModel({
@@ -63,7 +66,7 @@ app.get("/demo", async (req, res) => {
     });
 
     const result = await model.generateContent(
-      "Say hello to Tarunima and tell her her AI agent is working."
+      "Say hello to Tarunima and tell her her AI job agent is working."
     );
 
     res.json({
@@ -81,21 +84,22 @@ app.get("/demo", async (req, res) => {
     });
 
   }
+
 });
 
-// Job Ranking Endpoint
+// JOB RANKING
 app.post("/rank-jobs", async (req, res) => {
 
   try {
 
-    console.log("BODY RECEIVED:", req.body);
-
     const { cv, jobs } = req.body;
 
     if (!cv || !jobs) {
+
       return res.status(400).json({
         error: "Please provide cv and jobs in request body"
       });
+
     }
 
     const model = genAI.getGenerativeModel({
@@ -103,21 +107,21 @@ app.post("/rank-jobs", async (req, res) => {
     });
 
     const prompt = `
-You are an expert career advisor.
+You are an expert ESG and Sustainability recruiter.
 
-CV:
+Candidate CV:
 ${cv}
 
 Jobs:
 ${JSON.stringify(jobs)}
 
-For each job:
+For every job:
 
-1. Give score out of 100
-2. Explain the match
+1. Give a score out of 100
+2. Explain why it matches
 3. Suggest CV improvements
 
-Return the response in a structured format.
+Return the answer in a structured format.
 `;
 
     const result = await model.generateContent(prompt);
