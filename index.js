@@ -39,9 +39,7 @@ app.get("/routes", (req, res) => {
 
 // PROFILE
 app.get("/profile", (req, res) => {
-
   try {
-
     const profile = fs.readFileSync(
       "profile.json",
       "utf8"
@@ -56,12 +54,10 @@ app.get("/profile", (req, res) => {
     });
 
   }
-
 });
 
 // CV
 app.get("/cv", (req, res) => {
-
   try {
 
     const cv = fs.readFileSync(
@@ -80,7 +76,6 @@ app.get("/cv", (req, res) => {
     });
 
   }
-
 });
 
 // GEMINI TEST
@@ -115,7 +110,6 @@ app.get("/demo", async (req, res) => {
 });
 
 // JOB RANKING
-// JOB RANKING
 app.post("/rank-jobs", async (req, res) => {
 
   try {
@@ -123,11 +117,9 @@ app.post("/rank-jobs", async (req, res) => {
     const { jobs } = req.body;
 
     if (!jobs) {
-
       return res.status(400).json({
         error: "Please provide jobs in request body"
       });
-
     }
 
     const profile = fs.readFileSync(
@@ -180,44 +172,6 @@ Focus on:
 Do NOT prioritize sustainability or ESG roles.
 
 Return the response in a structured format.
-`;
-
-    const result = await model.generateContent(prompt);
-
-    res.json({
-      success: true,
-      result: result.response.text()
-    });
-
-  } catch (error) {
-
-    console.error("FULL ERROR:", error);
-
-    res.status(500).json({
-      success: false,
-      error: error.message
-    });
-
-  }
-
-});
-
-    const prompt = `
-You are an expert recruiter.
-
-Candidate CV:
-${cv}
-
-Jobs:
-${JSON.stringify(jobs)}
-
-For every job:
-
-1. Give a score out of 100
-2. Explain why it matches
-3. Suggest CV improvements
-
-Return the answer in a structured format.
 `;
 
     const result = await model.generateContent(prompt);
