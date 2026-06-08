@@ -23,6 +23,26 @@ app.get("/test", (req, res) => {
 
 // Show Available Routes
 app.get("/routes", (req, res) => {
+  app.get("/profile", (req, res) => {
+
+  try {
+
+    const profile = fs.readFileSync(
+      "profile.json",
+      "utf8"
+    );
+
+    res.json(JSON.parse(profile));
+
+  } catch (error) {
+
+    res.status(500).json({
+      error: error.message
+    });
+
+  }
+
+});
   res.json({
     available_routes: [
       "GET /",
