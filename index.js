@@ -39,6 +39,7 @@ app.get("/routes", (req, res) => {
 
 // PROFILE
 app.get("/profile", (req, res) => {
+
   try {
 
     const profile = fs.readFileSync(
@@ -53,8 +54,12 @@ app.get("/profile", (req, res) => {
     res.status(500).json({
       error: error.message
     });
-// CV ROUTE
 
+  }
+
+});
+
+// CV
 app.get("/cv", (req, res) => {
 
   try {
@@ -76,8 +81,6 @@ app.get("/cv", (req, res) => {
 
   }
 
-});
-  }
 });
 
 // GEMINI TEST
@@ -131,7 +134,7 @@ app.post("/rank-jobs", async (req, res) => {
     });
 
     const prompt = `
-You are an expert ESG and Sustainability recruiter.
+You are an expert recruiter.
 
 Candidate CV:
 ${cv}
