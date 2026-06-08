@@ -115,23 +115,92 @@ app.get("/demo", async (req, res) => {
 });
 
 // JOB RANKING
+// JOB RANKING
 app.post("/rank-jobs", async (req, res) => {
 
   try {
 
-    const { cv, jobs } = req.body;
+    const { jobs } = req.body;
 
-    if (!cv || !jobs) {
+    if (!jobs) {
 
       return res.status(400).json({
-        error: "Please provide cv and jobs in request body"
+        error: "Please provide jobs in request body"
       });
 
     }
 
+    const profile = fs.readFileSync(
+      "profile.json",
+      "utf8"
+    );
+
+    const cv = fs.readFileSync(
+      "cv.txt",
+      "utf8"
+    );
+
     const model = genAI.getGenerativeModel({
       model: "gemini-2.5-flash"
     });
+
+    const prompt = `
+You are an expert recruiter.
+
+Candidate Profile:
+${profile}
+
+Candidate CV:
+${cv}
+
+Jobs:
+${JSON.stringify(jobs)}
+
+Evaluate each job.
+
+For every job provide:
+
+1. Match score out of 100
+2. Why it matches
+3. Missing skills
+4. CV improvements
+5. Priority ranking (High / Medium / Low)
+
+Focus on:
+- Consulting
+- Business Transformation
+- Digital Transformation
+- Digital Analyst
+- Business Analyst
+- AI Governance
+- AI Risk
+- Data Analytics
+- Program Management
+
+Do NOT prioritize sustainability or ESG roles.
+
+Return the response in a structured format.
+`;
+
+    const result = await model.generateContent(prompt);
+
+    res.json({
+      success: true,
+      result: result.response.text()
+    });
+
+  } catch (error) {
+
+    console.error("FULL ERROR:", error);
+
+    res.status(500).json({
+      success: false,
+      error: error.message
+    });
+
+  }
+
+});
 
     const prompt = `
 You are an expert recruiter.
