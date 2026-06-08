@@ -30,6 +30,7 @@ app.get("/routes", (req, res) => {
       "GET /test",
       "GET /routes",
       "GET /profile",
+      "GET /cv",
       "GET /demo",
       "POST /rank-jobs"
     ]
@@ -52,7 +53,30 @@ app.get("/profile", (req, res) => {
     res.status(500).json({
       error: error.message
     });
+// CV ROUTE
 
+app.get("/cv", (req, res) => {
+
+  try {
+
+    const cv = fs.readFileSync(
+      "cv.txt",
+      "utf8"
+    );
+
+    res.json({
+      cv: cv
+    });
+
+  } catch (error) {
+
+    res.status(500).json({
+      error: error.message
+    });
+
+  }
+
+});
   }
 });
 
