@@ -32,6 +32,7 @@ app.get("/routes", (req, res) => {
       "GET /profile",
       "GET /cv",
       "GET /jobs",
+      "GET /auto-rank",
       "GET /demo",
       "POST /rank-jobs"
     ]
@@ -208,6 +209,79 @@ Return the response in a structured format.
 
     res.status(500).json({
       success: false,
+      error: error.message
+    });
+
+  }
+
+});
+
+// AUTO RANK
+
+app.get("/auto-rank", async (req, res) => {
+
+  try {
+
+    const profile = fs.readFileSync(
+      "profile.json",
+      "utf8"
+    );
+
+    const cv = fs.readFileSync(
+      "cv.txt",
+      "utf8"
+    );
+
+    const jobs = fs.readFileSync(
+      "jobs.json",
+      "utf8"
+    );
+
+    const model = genAI.getGenerativeModel({
+      model: "gemini-2.5-flash"
+    });
+
+    const prompt = `
+You are an expert recruiter.
+
+Candidate Profile:
+${profile}
+
+Candidate CV:
+${cv}
+
+Jobs:
+${jobs}
+
+For each job provide:
+
+1. Match score out of 100
+2. Why it matches
+3. Missing skills
+4. Priority ranking
+
+Focus on:
+- Consulting
+- Business Transformation
+- Digital Transformation
+- Business Analyst
+- Digital Analyst
+- AI Governance
+- AI Risk
+
+Do not prioritize sustainability roles.
+`;
+
+    const result = await model.generateContent(prompt);
+
+    res.json({
+      success: true,
+      result: result.response.text()
+    });
+
+  } catch (error) {
+
+    res.status(500).json({
       error: error.message
     });
 
