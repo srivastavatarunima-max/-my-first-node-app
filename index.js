@@ -31,6 +31,7 @@ app.get("/routes", (req, res) => {
       "GET /routes",
       "GET /profile",
       "GET /cv",
+      "GET /jobs",
       "GET /demo",
       "POST /rank-jobs"
     ]
@@ -77,7 +78,27 @@ app.get("/cv", (req, res) => {
 
   }
 });
+// JOBS
+app.get("/jobs", (req, res) => {
 
+  try {
+
+    const jobs = fs.readFileSync(
+      "jobs.json",
+      "utf8"
+    );
+
+    res.json(JSON.parse(jobs));
+
+  } catch (error) {
+
+    res.status(500).json({
+      error: error.message
+    });
+
+  }
+
+});
 // GEMINI TEST
 app.get("/demo", async (req, res) => {
 
