@@ -1,6 +1,4 @@
-const axios = require("axios");
-
-async function testScraper() {
+app.get("/scrape-test", async (req, res) => {
 
   try {
 
@@ -8,16 +6,18 @@ async function testScraper() {
       "https://www.michaelpage.ae/jobs"
     );
 
-    console.log(
-      response.data.substring(0, 500)
-    );
+    res.json({
+      success: true,
+      length: response.data.length,
+      first500: response.data.substring(0, 500)
+    });
 
   } catch (error) {
 
-    console.log(error.message);
+    res.status(500).json({
+      error: error.message
+    });
 
   }
 
-}
-
-testScraper();
+});
