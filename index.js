@@ -37,6 +37,7 @@ app.get("/routes", (req, res) => {
       "GET /auto-rank",
       "GET /demo",
       "GET /hello-test",
+      "GET /scrap-test",
       "POST /rank-jobs"
     ]
   });
