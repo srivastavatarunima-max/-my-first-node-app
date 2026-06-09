@@ -349,7 +349,7 @@ app.get("/scrape-test", async (req, res) => {
     console.log("STEP 1");
 
     const response = await axios.get(
-      "https://example.com",
+      "https://www.michaelpage.ae/jobs",
       {
         timeout: 10000
       }
@@ -357,10 +357,9 @@ app.get("/scrape-test", async (req, res) => {
 
     console.log("STEP 2");
 
-    res.json({
-      success: true,
-      length: response.data.length
-    });
+    res.send(
+  response.data.substring(0, 2000)
+);
 
   } catch (error) {
 
