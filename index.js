@@ -357,9 +357,11 @@ app.get("/scrape-test", async (req, res) => {
 
     console.log("STEP 2");
 
-    res.send(
-  response.data.substring(0, 2000)
-);
+    res.json({
+  success: true,
+  status: response.status,
+  length: response.data.length
+});
 
   } catch (error) {
 
