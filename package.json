@@ -1,8 +1,17 @@
-"dependencies": {
-  "@google/generative-ai": "^0.24.0",
-  "axios": "^1.7.2",
-  "body-parser": "^1.20.2",
-  "cheerio": "^1.0.0",
-  "dotenv": "^16.4.5",
-  "express": "^4.19.2"
+{
+  "name": "ai-job-agent",
+  "version": "1.0.0",
+  "description": "AI Job Agent",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js"
+  },
+  "dependencies": {
+    "@google/generative-ai": "^0.24.0",
+    "axios": "^1.7.2",
+    "body-parser": "^1.20.2",
+    "cheerio": "^1.0.0",
+    "dotenv": "^16.4.5",
+    "express": "^4.19.2"
+  }
 }
