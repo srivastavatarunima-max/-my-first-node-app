@@ -289,6 +289,46 @@ Do not prioritize sustainability roles.
 
 });
 
+app.get("/refresh-jobs", async (req, res) => {
+
+  try {
+
+    const jobs = [
+
+      {
+        title: "Business Transformation Consultant",
+        company: "PwC UAE",
+        description: "Business transformation and analytics."
+      },
+
+      {
+        title: "AI Governance Consultant",
+        company: "KPMG UAE",
+        description: "AI governance and AI risk."
+      }
+
+    ];
+
+    fs.writeFileSync(
+      "jobs.json",
+      JSON.stringify(jobs, null, 2)
+    );
+
+    res.json({
+      success: true,
+      message: "Jobs refreshed"
+    });
+
+  } catch (error) {
+
+    res.status(500).json({
+      error: error.message
+    });
+
+  }
+
+});
+
 const PORT = process.env.PORT || 3000;
 
 app.listen(PORT, () => {
