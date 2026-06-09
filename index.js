@@ -333,28 +333,6 @@ app.get("/refresh-jobs", async (req, res) => {
 
 });
 
-app.get("/scrape-test", async (req, res) => {
-
-  try {
-
-    const response = await axios.get(
-      "https://www.michaelpage.ae/jobs"
-    );
-
-    res.send(
-      response.data.substring(0, 3000)
-    );
-
-  } catch (error) {
-
-    res.status(500).json({
-      error: error.message
-    });
-
-  }
-
-});
-
 app.get("/hello-test", (req, res) => {
 
   res.json({
