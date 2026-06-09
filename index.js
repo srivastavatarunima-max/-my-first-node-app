@@ -3,7 +3,6 @@ const bodyParser = require("body-parser");
 const dotenv = require("dotenv");
 const { GoogleGenerativeAI } = require("@google/generative-ai");
 const fs = require("fs");
-
 const axios = require("axios");
 const cheerio = require("cheerio");
 
@@ -37,6 +36,7 @@ app.get("/routes", (req, res) => {
       "GET /jobs",
       "GET /auto-rank",
       "GET /demo",
+      "GET /hello-test",
       "POST /rank-jobs"
     ]
   });
@@ -351,6 +351,15 @@ app.get("/scrape-test", async (req, res) => {
     });
 
   }
+
+});
+
+app.get("/hello-test", (req, res) => {
+
+  res.json({
+    success: true,
+    message: "Hello Tarunima"
+  });
 
 });
 
