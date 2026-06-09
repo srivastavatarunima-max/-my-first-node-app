@@ -346,17 +346,29 @@ app.get("/scrape-test", async (req, res) => {
 
   try {
 
+    console.log("STEP 1");
+
     const response = await axios.get(
-      "https://www.google.com"
+      "https://example.com",
+      {
+        timeout: 10000
+      }
     );
 
-    res.send(
-      response.data.substring(0, 1000)
-    );
+    console.log("STEP 2");
+
+    res.json({
+      success: true,
+      length: response.data.length
+    });
 
   } catch (error) {
 
-    res.status(500).json({
+    console.log("SCRAPE ERROR:");
+    console.log(error.message);
+
+    res.json({
+      success: false,
       error: error.message
     });
 
