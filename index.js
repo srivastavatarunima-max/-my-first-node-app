@@ -4,6 +4,9 @@ const dotenv = require("dotenv");
 const { GoogleGenerativeAI } = require("@google/generative-ai");
 const fs = require("fs");
 
+const axios = require("axios");
+const cheerio = require("cheerio");
+
 dotenv.config();
 
 const app = express();
@@ -318,6 +321,28 @@ app.get("/refresh-jobs", async (req, res) => {
       success: true,
       message: "Jobs refreshed"
     });
+
+  } catch (error) {
+
+    res.status(500).json({
+      error: error.message
+    });
+
+  }
+
+});
+
+app.get("/scrape-test", async (req, res) => {
+
+  try {
+
+    const response = await axios.get(
+      "https://www.michaelpage.ae/jobs"
+    );
+
+    res.send(
+      response.data.substring(0, 3000)
+    );
 
   } catch (error) {
 
