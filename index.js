@@ -342,12 +342,25 @@ app.get("/hello-test", (req, res) => {
 
 });
 
-app.get("/scrape-test", (req, res) => {
+app.get("/scrape-test", async (req, res) => {
 
-  res.json({
-    success: true,
-    message: "scrape test route working"
-  });
+  try {
+
+    const response = await axios.get(
+      "https://www.google.com"
+    );
+
+    res.send(
+      response.data.substring(0, 1000)
+    );
+
+  } catch (error) {
+
+    res.status(500).json({
+      error: error.message
+    });
+
+  }
 
 });
 
