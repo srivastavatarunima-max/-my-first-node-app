@@ -357,10 +357,13 @@ app.get("/scrape-test", async (req, res) => {
 
     console.log("STEP 2");
 
-    res.json({
+    const $ = cheerio.load(response.data);
+
+const pageTitle = $("title").text();
+
+res.json({
   success: true,
-  status: response.status,
-  length: response.data.length
+  title: pageTitle
 });
 
   } catch (error) {
