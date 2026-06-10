@@ -37,6 +37,7 @@ app.get("/routes", (req, res) => {
       "GET /auto-rank",
       "GET /demo",
       "GET /hello-test",
+      "GET /jobs-test",
       "GET /scrape-test",
       "POST /rank-jobs"
     ]
@@ -401,6 +402,17 @@ res.json({
     });
 
   }
+
+});
+
+app.get("/jobs-test", (req, res) => {
+
+  const jobs = fs.readFileSync(
+    "jobs.json",
+    "utf8"
+  );
+
+  res.send(jobs);
 
 });
 
