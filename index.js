@@ -483,12 +483,21 @@ Example:
 `;
 
     const result =
-      await model.generateContent(prompt);
+  await model.generateContent(prompt);
 
-    res.json({
-      success: true,
-      result: result.response.text()
-    });
+const shortlist =
+  result.response.text();
+
+fs.writeFileSync(
+  "shortlistedJobs.json",
+  shortlist
+);
+
+res.json({
+  success: true,
+  message: "Shortlist saved",
+  result: shortlist
+});
 
   } catch (error) {
 
