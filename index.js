@@ -38,7 +38,8 @@ app.get("/routes", (req, res) => {
       "GET /demo",
       "GET /hello-test",
       "GET /jobs-test",
-      "GET/generate-cv",
+      "GET /generate-cv",
+      "GET /shortlist-jobs",
       "GET /scrape-test",
       "POST /rank-jobs"
     ]
@@ -396,6 +397,89 @@ res.json({
 
     console.log("SCRAPE ERROR:");
     console.log(error.message);
+
+    res.json({
+      success: false,
+      error: error.message
+    });
+
+  }
+
+});
+
+app.get("/shortlist-jobs", async (req, res) => {
+
+  try {
+
+    const jobs = fs.readFileSync(
+      "jobs.json",
+      "utf8"
+    );
+
+    const model = genAI.getGenerativeModel({
+      model: "gemini-2.5-flash"
+    });
+
+    const prompt = `
+You are an expert recruiter.
+
+Candidate:
+
+Tarunima
+
+Background:
+- Deloitte
+- Business Transformation
+- Strategy
+- Analytics
+- AI Governance
+- AI Risk
+- MBA Finance and IT
+
+Jobs:
+${jobs}
+
+For every job return:
+
+1. Match Score
+2. Decision:
+   APPLY
+   MAYBE
+   SKIP
+
+Rules:
+
+APPLY:
+Score 75+
+
+MAYBE:
+Score 60-74
+
+SKIP:
+Below 60
+
+Return only JSON.
+
+Example:
+
+[
+ {
+   "title":"Business Transformation Consultant",
+   "score":90,
+   "decision":"APPLY"
+ }
+]
+`;
+
+    const result =
+      await model.generateContent(prompt);
+
+    res.json({
+      success: true,
+      result: result.response.text()
+    });
+
+  } catch (error) {
 
     res.json({
       success: false,
