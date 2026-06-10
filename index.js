@@ -359,11 +359,19 @@ app.get("/scrape-test", async (req, res) => {
 
     const $ = cheerio.load(response.data);
 
-const pageTitle = $("title").text();
+const headings = [];
+
+$("h1, h2, h3").each((i, element) => {
+
+  headings.push(
+    $(element).text().trim()
+  );
+
+});
 
 res.json({
   success: true,
-  title: pageTitle
+  headings: headings.slice(0, 20)
 });
 
   } catch (error) {
