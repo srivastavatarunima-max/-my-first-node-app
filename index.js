@@ -38,6 +38,7 @@ app.get("/routes", (req, res) => {
       "GET /demo",
       "GET /hello-test",
       "GET /jobs-test",
+      "GET/generate-cv",
       "GET /scrape-test",
       "POST /rank-jobs"
     ]
@@ -413,6 +414,73 @@ app.get("/jobs-test", (req, res) => {
   );
 
   res.send(jobs);
+
+});
+
+app.get("/generate-cv", async (req, res) => {
+
+  try {
+
+    const cv = fs.readFileSync(
+      "cv.txt",
+      "utf8"
+    );
+
+    const profile = fs.readFileSync(
+      "profile.json",
+      "utf8"
+    );
+
+    const jobs = JSON.parse(
+      fs.readFileSync(
+        "jobs.json",
+        "utf8"
+      )
+    );
+
+    const selectedJob = jobs[0];
+
+    const model = genAI.getGenerativeModel({
+      model: "gemini-1.5-flash"
+    });
+
+    const prompt = `
+You are an expert CV writer.
+
+Candidate Profile:
+${profile}
+
+Current CV:
+${cv}
+
+Target Job:
+${selectedJob}
+
+Rewrite the CV to maximize match for this role.
+
+Keep it professional.
+
+Return only the revised CV.
+`;
+
+    const result = await model.generateContent(
+      prompt
+    );
+
+    res.json({
+      success: true,
+      targetJob: selectedJob,
+      tailoredCV: result.response.text()
+    });
+
+  } catch (error) {
+
+    res.status(500).json({
+      success: false,
+      error: error.message
+    });
+
+  }
 
 });
 
