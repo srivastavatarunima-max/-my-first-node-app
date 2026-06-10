@@ -366,14 +366,16 @@ $("h1, h2, h3").each((i, element) => {
   const title = $(element).text().trim();
 
   if (
-    title.length > 10 &&
-    !title.includes("Job seekers") &&
-    !title.includes("Employers") &&
-    !title.includes("About") &&
-    !title.includes("Contact")
-  ) {
-    jobs.push(title);
-  }
+  title.length > 10 &&
+  !title.includes("Job seekers") &&
+  !title.includes("Employers") &&
+  !title.includes("About") &&
+  !title.includes("Contact") &&
+  !title.includes("Search jobs") &&
+  !title.includes("Filter")
+) {
+  jobs.push(title);
+}
 
 });
 
