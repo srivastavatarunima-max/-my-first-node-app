@@ -203,12 +203,22 @@ Do NOT prioritize sustainability or ESG roles.
 Return the response in a structured format.
 `;
 
-    const result = await model.generateContent(prompt);
+    const result =
+  await model.generateContent(prompt);
 
-    res.json({
-      success: true,
-      result: result.response.text()
-    });
+const shortlistedJobs =
+  result.response.text();
+
+fs.writeFileSync(
+  "shortlistedJobs.json",
+  shortlistedJobs
+);
+
+res.json({
+  success: true,
+  message: "Shortlisted jobs saved",
+  result: shortlistedJobs
+});
 
   } catch (error) {
 
@@ -490,6 +500,42 @@ Example:
 
 });
 
+app.get("/best-job", (req, res) => {
+
+  try {
+
+    const shortlistedJobs =
+      JSON.parse(
+        fs.readFileSync(
+          "shortlistedJobs.json",
+          "utf8"
+        )
+      );
+
+    const applyJobs =
+      shortlistedJobs.filter(
+        job => job.decision === "APPLY"
+      );
+
+    applyJobs.sort(
+      (a, b) => b.score - a.score
+    );
+
+    res.json({
+      success: true,
+      bestJob: applyJobs[0]
+    });
+
+  } catch (error) {
+
+    res.json({
+      success: false,
+      error: error.message
+    });
+
+  }
+
+});
 app.get("/jobs-test", (req, res) => {
 
   const jobs = fs.readFileSync(
