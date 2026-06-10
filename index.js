@@ -379,9 +379,15 @@ $("h1, h2, h3").each((i, element) => {
 
 });
 
+fs.writeFileSync(
+  "jobs.json",
+  JSON.stringify(jobs, null, 2)
+);
+
 res.json({
   success: true,
-  jobs: jobs.slice(0, 20)
+  message: "Jobs saved successfully",
+  totalJobs: jobs.length
 });
 
   } catch (error) {
