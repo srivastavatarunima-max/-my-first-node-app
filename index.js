@@ -359,19 +359,27 @@ app.get("/scrape-test", async (req, res) => {
 
     const $ = cheerio.load(response.data);
 
-const headings = [];
+const jobs = [];
 
 $("h1, h2, h3").each((i, element) => {
 
-  headings.push(
-    $(element).text().trim()
-  );
+  const title = $(element).text().trim();
+
+  if (
+    title.length > 10 &&
+    !title.includes("Job seekers") &&
+    !title.includes("Employers") &&
+    !title.includes("About") &&
+    !title.includes("Contact")
+  ) {
+    jobs.push(title);
+  }
 
 });
 
 res.json({
   success: true,
-  headings: headings.slice(0, 20)
+  jobs: jobs.slice(0, 20)
 });
 
   } catch (error) {
