@@ -569,7 +569,39 @@ app.get("/generate-cv", async (req, res) => {
       )
     );
 
-    const selectedJob = jobs[0];
+   const shortlistedResult =
+  await model.generateContent(`
+You are an expert recruiter.
+
+Candidate:
+Tarunima
+
+Background:
+- Deloitte
+- Business Transformation
+- Strategy
+- Analytics
+- AI Governance
+- AI Risk
+
+Jobs:
+${JSON.stringify(jobs)}
+
+Select ONLY the single best job.
+
+Return JSON only.
+
+Example:
+
+{
+  "title":"Business Transformation Consultant",
+  "score":95,
+  "decision":"APPLY"
+}
+`);
+
+const selectedJob =
+  shortlistedResult.response.text();
 
     const model = genAI.getGenerativeModel({
       model: "gemini-2.5-flash"
