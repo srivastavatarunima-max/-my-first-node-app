@@ -607,10 +607,6 @@ Example:
 const selectedJob =
   shortlistedResult.response.text();
 
-    const model = genAI.getGenerativeModel({
-      model: "gemini-2.5-flash"
-    });
-
     const prompt = `
 You are an expert CV writer.
 
