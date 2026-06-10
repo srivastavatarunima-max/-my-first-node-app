@@ -501,7 +501,7 @@ Example:
 
 });
 
-app.get("/best-job", (req, res) => {
+app.get("/best-jobs", (req, res) => {
 
   try {
 
@@ -569,6 +569,10 @@ app.get("/generate-cv", async (req, res) => {
       )
     );
 
+    const model = genAI.getGenerativeModel({
+  model: "gemini-2.5-flash"
+});
+    
    const shortlistedResult =
   await model.generateContent(`
 You are an expert recruiter.
