@@ -40,6 +40,7 @@ app.get("/routes", (req, res) => {
       "GET /jobs-test",
       "GET /generate-cv",
       "GET /shortlist-jobs",
+      "GET /best-jobs",
       "GET /scrape-test",
       "POST /rank-jobs"
     ]
