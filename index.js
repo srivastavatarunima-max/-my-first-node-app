@@ -695,8 +695,8 @@ const profile = fs.readFileSync(
   "profile.json",
   "utf8"
 );
-
 const generatedCVs = [];
+console.log("APPLY JOBS COUNT:", applyJobs.length);
 
 const model = genAI.getGenerativeModel({
   model: "gemini-2.5-flash"
