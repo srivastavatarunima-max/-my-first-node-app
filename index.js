@@ -657,12 +657,30 @@ Return only the revised CV.
 });
 
 app.get("/generate-all-cvs", async (req, res) => {
+  
+try {
+
+  const shortlistedJobs = JSON.parse(
+    fs.readFileSync(
+      "shortlistedJobs.json",
+      "utf8"
+    )
+  );
 
   res.json({
     success: true,
-    message: "generate-all-cvs endpoint working"
+    totalJobs: shortlistedJobs.length,
+    jobs: shortlistedJobs
   });
 
+} catch (error) {
+
+  res.status(500).json({
+    success: false,
+    error: error.message
+  });
+
+}
 });
 
 const PORT = process.env.PORT || 3000;
