@@ -737,10 +737,17 @@ pdf.text(
 pdf.end();
 
 await new Promise((resolve) => {
-  pdf.on("end", resolve);
+  setTimeout(resolve, 3000);
 });
 
- console.log("Uploading PDF to Dropbox:", fileName);
+console.log("Checking file:", fileName);
+
+console.log(
+  "Exists?",
+  fs.existsSync(fileName)
+);
+
+console.log("Uploading PDF to Dropbox:", fileName);
 
 const fileContent =
   fs.readFileSync(fileName);
