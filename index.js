@@ -678,11 +678,47 @@ const profile = fs.readFileSync(
   "utf8"
 );
 
+const generatedCVs = [];
+
+const model = genAI.getGenerativeModel({
+  model: "gemini-2.5-flash"
+});
+
+for (const job of applyJobs) {
+
+  const prompt = `
+You are an expert CV writer.
+
+Candidate Profile:
+${profile}
+
+Current CV:
+${cv}
+
+Target Job:
+${JSON.stringify(job)}
+
+Rewrite the CV to maximize match.
+
+Return only the revised CV.
+`;
+
+  const result = await model.generateContent(
+    prompt
+  );
+
+  generatedCVs.push({
+    jobTitle: job.title,
+    score: job.score,
+    tailoredCV: result.response.text()
+  });
+
+}
+
 res.json({
   success: true,
-  totalJobs: applyJobs.length,
-  cvLoaded: cv.length > 0,
-  profileLoaded: profile.length > 0
+  totalCVs: generatedCVs.length,
+  generatedCVs
 });
 
 } catch (error) {
