@@ -764,6 +764,15 @@ const uploadedFile = await drive.files.create({
     body: fs.createReadStream(fileName)
   }
 });
+  console.log(
+  "Uploaded file ID:",
+  uploadedFile.data.id
+);
+
+console.log(
+  "Uploaded file name:",
+  uploadedFile.data.name
+);
 
 }
 
