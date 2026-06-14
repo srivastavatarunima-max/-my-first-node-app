@@ -752,6 +752,10 @@ await new Promise((resolve) => {
   pdf.on("end", resolve);
 });
 
+console.log(
+"Uploading PDF:",
+fileName
+);
 const uploadedFile = await drive.files.create({
   requestBody: {
     name: fileName,
@@ -764,6 +768,10 @@ const uploadedFile = await drive.files.create({
     body: fs.createReadStream(fileName)
   }
 });
+
+  console.log(
+  "Upload successful"
+);
   console.log(
   "Uploaded file ID:",
   uploadedFile.data.id
@@ -775,7 +783,6 @@ console.log(
 );
 
 }
-
   
 res.json({
   success: true,
