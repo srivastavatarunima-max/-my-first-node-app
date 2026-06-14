@@ -514,16 +514,14 @@ app.get("/best-jobs", (req, res) => {
 
   try {
 
-    const shortlistedJobs =
-      JSON.parse(
+    const shortlistedJobs = JSON.parse(
         fs.readFileSync(
           "shortlistedJobs.json",
           "utf8"
         )
       );
 
-    const applyJobs =
-      shortlistedJobs.filter(
+    const applyJobs = shortlistedJobs.filter(
         job => job.decision === "APPLY"
       );
 
@@ -666,11 +664,14 @@ try {
       "utf8"
     )
   );
+  const applyjobs = shortlistedJobs.filter(
+    job => job.decision === "APPLY"
+  );
 
   res.json({
     success: true,
-    totalJobs: shortlistedJobs.length,
-    jobs: shortlistedJobs
+    totalJobs: applyJobs.length,
+    jobs: applyJobs
   });
 
 } catch (error) {
