@@ -658,6 +658,11 @@ Return only the revised CV.
 
 app.get("/generate-all-cvs", async (req, res) => {
 
+  res.json({
+    success: true,
+    message: "generate-all-cvs endpoint working"
+  });
+
 });
 
 const PORT = process.env.PORT || 3000;
