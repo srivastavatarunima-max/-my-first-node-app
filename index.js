@@ -757,6 +757,7 @@ console.log(
 fileName
 );
 const uploadedFile = await drive.files.create({
+  supportsAllDrives: true,
   requestBody: {
     name: fileName,
     parents: [
