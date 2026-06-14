@@ -6,24 +6,13 @@ const fs = require("fs");
 const path = require("path");
 const axios = require("axios");
 const cheerio = require("cheerio");
-const { google } = require("googleapis");
+const { Dropbox } = require("dropbox");
+const { google } = require("googleeapis");
 const PDFDocument = require("pdfkit");
 
 dotenv.config();
-const serviceAccount = JSON.parse(
-  process.env.GOOGLE_SERVICE_ACCOUNT
-);
-
-const auth = new google.auth.GoogleAuth({
-  credentials: serviceAccount,
-  scopes: [
-    "https://www.googleapis.com/auth/drive"
-  ]
-});
-
-const drive = google.drive({
-  version: "v3",
-  auth
+const dbx = new Dropbox({
+  accessToken: process.env.DROPBOX_ACCESS_TOKEN
 });
 
 const app = express();
@@ -752,36 +741,20 @@ await new Promise((resolve) => {
   pdf.on("end", resolve);
 });
 
-console.log(
-"Uploading PDF:",
-fileName
-);
-const uploadedFile = await drive.files.create({
-  supportsAllDrives: true,
-  requestBody: {
-    name: fileName,
-    parents: [
-      process.env.GOOGLE_DRIVE_FOLDER_ID
-    ]
-  },
-  media: {
-    mimeType: "application/pdf",
-    body: fs.createReadStream(fileName)
-  }
+ console.log("Uploading PDF to Dropbox:", fileName);
+
+const fileContent =
+  fs.readFileSync(fileName);
+
+await dbx.filesUpload({
+  path: "/" + fileName,
+  contents: fileContent
 });
 
-  console.log(
-  "Upload successful"
-);
-  console.log(
-  "Uploaded file ID:",
-  uploadedFile.data.id
-);
-
 console.log(
-  "Uploaded file name:",
-  uploadedFile.data.name
-);
+  "Dropbox upload successful:",
+  fileName
+); 
 
 }
   
