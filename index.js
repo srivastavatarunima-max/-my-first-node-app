@@ -668,11 +668,22 @@ try {
     job => job.decision === "APPLY"
   );
 
-  res.json({
-    success: true,
-    totalJobs: applyJobs.length,
-    jobs: applyJobs
-  });
+  const cv = fs.readFileSync(
+  "cv.txt",
+  "utf8"
+);
+
+const profile = fs.readFileSync(
+  "profile.json",
+  "utf8"
+);
+
+res.json({
+  success: true,
+  totalJobs: applyJobs.length,
+  cvLoaded: cv.length > 0,
+  profileLoaded: profile.length > 0
+});
 
 } catch (error) {
 
