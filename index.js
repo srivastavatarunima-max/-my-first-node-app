@@ -5,6 +5,7 @@ const { GoogleGenerativeAI } = require("@google/generative-ai");
 const fs = require("fs");
 const axios = require("axios");
 const cheerio = require("cheerio");
+const PDFDocument = require("pdfkit");
 
 dotenv.config();
 
@@ -712,7 +713,23 @@ Return only the revised CV.
     score: job.score,
     tailoredCV: result.response.text()
   });
+const pdf = new PDFDocument();
 
+const fileName =
+  job.title.replace(/[^a-zA-Z0-9]/g, "_") +
+  ".pdf";
+
+pdf.pipe(
+  fs.createWriteStream(fileName)
+);
+
+pdf.fontSize(12);
+
+pdf.text(
+  result.response.text()
+);
+
+pdf.end();
 }
 
 res.json({
