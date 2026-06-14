@@ -720,10 +720,13 @@ Rewrite the CV to maximize match.
 
 Return only the revised CV.
 `;
-
-  const result = await model.generateContent(
-    prompt
-  );
+const result = {
+  response: {
+    text: () =>
+      "Test PDF from Render and Google Drive"
+  }
+};
+  
 
   generatedCVs.push({
     jobTitle: job.title,
