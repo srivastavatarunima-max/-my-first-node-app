@@ -747,8 +747,27 @@ pdf.text(
 );
 
 pdf.end();
+
+await new Promise((resolve) => {
+  pdf.on("end", resolve);
+});
+
+const uploadedFile = await drive.files.create({
+  requestBody: {
+    name: fileName,
+    parents: [
+      process.env.GOOGLE_DRIVE_FOLDER_ID
+    ]
+  },
+  media: {
+    mimeType: "application/pdf",
+    body: fs.createReadStream(fileName)
+  }
+});
+
 }
 
+  
 res.json({
   success: true,
   totalCVs: generatedCVs.length,
