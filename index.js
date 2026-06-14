@@ -664,7 +664,7 @@ try {
       "utf8"
     )
   );
-  const applyjobs = shortlistedJobs.filter(
+  const applyJobs = shortlistedJobs.filter(
     job => job.decision === "APPLY"
   );
 
