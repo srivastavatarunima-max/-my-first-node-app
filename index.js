@@ -5,6 +5,7 @@ const { GoogleGenerativeAI } = require("@google/generative-ai");
 const fs = require("fs");
 const axios = require("axios");
 const cheerio = require("cheerio");
+const { google } = require("googleapis");
 const PDFDocument = require("pdfkit");
 
 dotenv.config();
