@@ -1,9 +1,12 @@
-I am a professional pastry chef.
-
-I have 15 years of experience baking cakes.
-
-I specialize in wedding cakes, desserts and bakery operations.
-
-I have no consulting experience.
-I have no AI governance experience.
-I have no business transformation experience.
+[
+{
+“title”: “Elephant Trainer”,
+“company”: “Dubai Zoo”,
+“description”: “Train purple elephants.”
+},
+{
+“title”: “Cake Decorator”,
+“company”: “Sweet Palace”,
+“description”: “Design wedding cakes.”
+}
+]
