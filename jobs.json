@@ -1,12 +1,10 @@
 [
-{
-“title”: “Elephant Trainer”,
-“company”: “Dubai Zoo”,
-“description”: “Train purple elephants.”
-},
-{
-“title”: “Cake Decorator”,
-“company”: “Sweet Palace”,
-“description”: “Design wedding cakes.”
-}
+  {
+    "title": "Elephant Trainer",
+    "company": "Dubai Zoo"
+  },
+  {
+    "title": "Cake Decorator",
+    "company": "Sweet Palace"
+  }
 ]
