@@ -704,9 +704,28 @@ ${cv}
 Target Job:
 ${JSON.stringify(job)}
 
-Rewrite the CV to maximize match.
+You are an expert CV writer for consulting 
+and AI roles in the UAE market.
 
-Return only the revised CV.
+CANDIDATE CV:
+${cv}
+
+TARGET JOB:
+${JSON.stringify(job)}
+
+Rewrite this CV to maximize match by:
+- Updating the headline to match the job title
+- Rewriting the Profile to address this role directly
+- Reordering bullet points so most relevant 
+  experience appears first
+- Prioritizing skills the job description mentions
+
+RULES:
+- Use ONLY real information from the CV above
+- Never add placeholders like [Your Phone Number]
+- Never invent experience that is not in the CV
+- Return only the revised CV, no commentary
+
 `;
 
 const result = await model.generateContent(
