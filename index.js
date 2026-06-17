@@ -489,26 +489,39 @@ ${profile}
 Jobs:
 ${jobs}
 
-For every job return:
+For every job evaluate based on:
 
-1. Match Score
-2. Decision:
-   APPLY
-   MAYBE
-   SKIP
+- Consulting
+- Business Transformation
+- Digital Transformation
+- Business Analyst
+- Digital Analyst
+- AI Governance
+- AI Risk
+- Strategy
+- Program Management
 
-Rules:
+Candidate has:
+- Deloitte experience
+- MBA Finance and IT
+- Business Transformation experience
+- Analytics experience
+- AI Governance experience
 
-APPLY:
-Score 75+
+Scoring Rules:
 
-MAYBE:
-Score 60-74
+90-100 = Excellent Match
+75-89 = Strong Match
+60-74 = Possible Match
+0-59 = Poor Match
 
-SKIP:
-Below 60
+Decision Rules:
 
-Return only JSON.
+APPLY = score 75+
+MAYBE = score 60-74
+SKIP = below 60
+
+Return JSON only.
 
 Example:
 
