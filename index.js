@@ -471,28 +471,25 @@ app.get("/shortlist-jobs", async (req, res) => {
       "utf8"
     );
 
+  const profile = fs.readFileSync(
+"profile.json",
+"utf8"
+);    
+    
     const model = genAI.getGenerativeModel({
       model: "gemini-2.5-flash"
     });
-
+    
     const prompt = `
 You are an expert recruiter.
 
-Candidate:
-
-Tarunima
-
-Background:
-- Deloitte
-- Business Transformation
-- Strategy
-- Analytics
-- AI Governance
-- AI Risk
-- MBA Finance and IT
+Candidate Profile: 
+${profile}
 
 Jobs:
 ${jobs}
+...
+`;
 
 For every job return:
 
@@ -624,50 +621,6 @@ app.get("/generate-cv", async (req, res) => {
   )
 );
 
-const selectedJob =
-  shortlistedJobs
-    .filter(job =>
-      job.decision === "APPLY"
-    )
-    .sort((a, b) =>
-      b.score - a.score
-    )[0];
-    
-const prompt = `
-You are an expert recruiter.
-...
-`;
-
-Candidate:
-Tarunima
-
-Background:
-- Deloitte
-- Business Transformation
-- Strategy
-- Analytics
-- AI Governance
-- AI Risk
-
-Jobs:
-${JSON.stringify(jobs)}
-
-Select ONLY the single best job.
-
-Return JSON only.
-
-Example:
-
-{
-  "title":"Business Transformation Consultant",
-  "score":95,
-  "decision":"APPLY"
-}
-`);
-
-const selectedJob =
-  shortlistedResult.response.text();
-
     const prompt = `
 You are an expert CV writer.
 
@@ -718,6 +671,10 @@ try {
       "utf8"
     )
   );
+  const applyjobs = shortlistedJobs.filter(
+    job => job.decision === "APPLY"
+      );
+  
   if (applyJobs.length === 0) {
   return res.status(400).json({
     success: false,
