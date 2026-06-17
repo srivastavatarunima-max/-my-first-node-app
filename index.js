@@ -6,13 +6,10 @@ const fs = require("fs");
 const path = require("path");
 const axios = require("axios");
 const cheerio = require("cheerio");
-const { Dropbox } = require("dropbox");
+const { getDropboxClient } = require("./services/dropbox");
 const PDFDocument = require("pdfkit");
 
 dotenv.config();
-const dbx = new Dropbox({
-  accessToken: process.env.DROPBOX_ACCESS_TOKEN
-});
 
 const app = express();
 
@@ -773,6 +770,8 @@ console.log("Uploading PDF to Dropbox:", fileName);
 const fileContent =
   fs.readFileSync(fileName);
 
+const dbx = getDropboxClient();
+  
 await dbx.filesUpload({
   path: "/" + fileName,
   contents: fileContent
