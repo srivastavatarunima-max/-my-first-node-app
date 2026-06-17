@@ -741,6 +741,8 @@ const pdf = new PDFDocument();
 
 const fileName =
   job.title.replace(/[^a-zA-Z0-9]/g, "_") +
+  "_" +
+  Date.now() +
   ".pdf";
 
 pdf.pipe(
@@ -771,16 +773,15 @@ console.log("Uploading PDF to Dropbox:", fileName);
 const fileContent =
   fs.readFileSync(fileName);
 
-const fileName =
-  job.title.replace(/[^a-zA-Z0-9]/g, "_") +
-  "_" +
-  Date.now() +
-  ".pdf";
+await dbx.filesUpload({
+  path: "/" + fileName,
+  contents: fileContent
+});
 
 console.log(
   "Dropbox upload successful:",
   fileName
-); 
+);
 
 }
   
