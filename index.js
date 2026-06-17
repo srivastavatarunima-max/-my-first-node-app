@@ -310,7 +310,56 @@ Do not prioritize sustainability roles.
 
 });
 
-app.get("/refresh-jobs", async (req, res) => {
+app.get("/fetch-jobs", async (req, res) => {
+  try {
+    const response = await axios.get(
+      "https://www.arbeitnow.com/api/job-board-api"
+    );
+
+    const allJobs = response.data.data;
+
+    const keywords = [
+      "consultant", "transformation",
+      "analytics", "governance", "strategy",
+      "business analyst", "AI", "digital"
+    ];
+
+    const filtered = allJobs
+      .filter(job => {
+        const t = job.title.toLowerCase();
+        return keywords.some(k => 
+          t.includes(k.toLowerCase())
+        );
+      })
+      .slice(0, 15)
+      .map(job => ({
+        title: job.title,
+        company: job.company_name,
+        description: job.description
+          .substring(0, 600),
+        location: job.location
+      }));
+
+    fs.writeFileSync(
+      "jobs.json",
+      JSON.stringify(filtered, null, 2)
+    );
+
+    res.json({
+      success: true,
+      totalFetched: filtered.length,
+      jobs: filtered
+    });
+
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      error: error.message
+    });
+  }
+});
+
+async function initializeJobs() {
   try {
     const response = await axios.get(
       "https://www.arbeitnow.com/api/job-board-api"
@@ -321,35 +370,25 @@ app.get("/refresh-jobs", async (req, res) => {
       "AI","digital"
     ];
     const filtered = response.data.data
-      .filter(job => keywords.some(k =>
-        job.title.toLowerCase().includes(
-          k.toLowerCase()
-        )
+      .filter(job => keywords.some(k => 
+        job.title.toLowerCase().includes(k.toLowerCase())
       ))
       .slice(0, 15)
       .map(job => ({
         title: job.title,
         company: job.company_name,
-        description: job.description
-          .substring(0, 600),
+        description: job.description.substring(0, 600),
         location: job.location
       }));
     fs.writeFileSync(
       "jobs.json",
       JSON.stringify(filtered, null, 2)
     );
-    res.json({
-      success: true,
-      totalJobs: filtered.length,
-      jobs: filtered
-    });
+    console.log(`Auto-loaded ${filtered.length} real jobs on startup`);
   } catch (error) {
-    res.status(500).json({
-      success: false,
-      error: error.message
-    });
+    console.log("Startup job fetch failed:", error.message);
   }
-});
+}
 
 
 app.get("/hello-test", (req, res) => {
@@ -805,90 +844,9 @@ res.status(500).json({
 }
 });
 
-const PORT = process.env.PORT || 3000;
-
-app.get("/fetch-jobs", async (req, res) => {
-  try {
-    const response = await axios.get(
-      "https://www.arbeitnow.com/api/job-board-api"
-    );
-
-    const allJobs = response.data.data;
-
-    const keywords = [
-      "consultant", "transformation",
-      "analytics", "governance", "strategy",
-      "business analyst", "AI", "digital"
-    ];
-
-    const filtered = allJobs
-      .filter(job => {
-        const t = job.title.toLowerCase();
-        return keywords.some(k => 
-          t.includes(k.toLowerCase())
-        );
-      })
-      .slice(0, 15)
-      .map(job => ({
-        title: job.title,
-        company: job.company_name,
-        description: job.description
-          .substring(0, 600),
-        location: job.location
-      }));
-
-    fs.writeFileSync(
-      "jobs.json",
-      JSON.stringify(filtered, null, 2)
-    );
-
-    res.json({
-      success: true,
-      totalFetched: filtered.length,
-      jobs: filtered
-    });
-
-  } catch (error) {
-    res.status(500).json({
-      success: false,
-      error: error.message
-    });
-  }
-});
-
-async function initializeJobs() {
-  try {
-    const response = await axios.get(
-      "https://www.arbeitnow.com/api/job-board-api"
-    );
-    const keywords = [
-      "consultant","transformation","analytics",
-      "governance","strategy","business analyst",
-      "AI","digital"
-    ];
-    const filtered = response.data.data
-      .filter(job => keywords.some(k => 
-        job.title.toLowerCase().includes(k.toLowerCase())
-      ))
-      .slice(0, 15)
-      .map(job => ({
-        title: job.title,
-        company: job.company_name,
-        description: job.description.substring(0, 600),
-        location: job.location
-      }));
-    fs.writeFileSync(
-      "jobs.json",
-      JSON.stringify(filtered, null, 2)
-    );
-    console.log(`Auto-loaded ${filtered.length} real jobs on startup`);
-  } catch (error) {
-    console.log("Startup job fetch failed:", error.message);
-  }
-}
-
 initializeJobs();
 
+const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => { 
   console.log(`Server running on port ${PORT}`);
 });
