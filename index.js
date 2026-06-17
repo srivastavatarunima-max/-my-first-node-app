@@ -488,8 +488,6 @@ ${profile}
 
 Jobs:
 ${jobs}
-...
-`;
 
 For every job return:
 
@@ -522,7 +520,6 @@ Example:
  }
 ]
 `;
-
     const result =
   await model.generateContent(prompt);
 
