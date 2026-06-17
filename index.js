@@ -319,10 +319,16 @@ app.get("/fetch-jobs", async (req, res) => {
     const allJobs = response.data.data;
 
     const keywords = [
-      "consultant", "transformation",
-      "analytics", "governance", "strategy",
-      "business analyst", "AI", "digital"
-    ];
+  "consultant",
+  "business analyst",
+  "business transformation",
+  "digital transformation",
+  "strategy",
+  "governance",
+  "program manager",
+  "project manager",
+  "transformation manager"
+];
 
     const filtered = allJobs
       .filter(job => {
