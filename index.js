@@ -633,7 +633,10 @@ const selectedJob =
       b.score - a.score
     )[0];
     
+const prompt = `
 You are an expert recruiter.
+...
+`;
 
 Candidate:
 Tarunima
