@@ -530,7 +530,11 @@ Example:
   await model.generateContent(prompt);
 
 const shortlist =
-  result.response.text();
+  result.response
+    .text()
+    .replace(/```json/g, "")
+    .replace(/```/g, "")
+    .trim();
 
 fs.writeFileSync(
   "shortlistedJobs.json",
@@ -613,19 +617,22 @@ app.get("/generate-cv", async (req, res) => {
       "utf8"
     );
 
-    const jobs = JSON.parse(
-      fs.readFileSync(
-        "jobs.json",
-        "utf8"
-      )
-    );
+    const shortlistedJobs = JSON.parse(
+  fs.readFileSync(
+    "shortlistedJobs.json",
+    "utf8"
+  )
+);
 
-    const model = genAI.getGenerativeModel({
-  model: "gemini-2.5-flash"
-});
+const selectedJob =
+  shortlistedJobs
+    .filter(job =>
+      job.decision === "APPLY"
+    )
+    .sort((a, b) =>
+      b.score - a.score
+    )[0];
     
-   const shortlistedResult =
-  await model.generateContent(`
 You are an expert recruiter.
 
 Candidate:
@@ -708,10 +715,12 @@ try {
       "utf8"
     )
   );
-  const applyJobs = shortlistedJobs.filter(
-    job => job.decision === "APPLY"
-  );
-
+  if (applyJobs.length === 0) {
+  return res.status(400).json({
+    success: false,
+    error: "No APPLY jobs found"
+  });
+}
   const cv = fs.readFileSync(
   "cv.txt",
   "utf8"
